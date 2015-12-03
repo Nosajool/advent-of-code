@@ -35,7 +35,7 @@ module Advent
   class Day1
 
     def initialize
-      file = File.open("input.txt", "r")
+      file = File.open(File.dirname(__FILE__) + "/input.txt", "r")
       @input = file.readline
     end
 
