@@ -21,16 +21,35 @@
 # ))) and )())()) both result in floor -3.
 # To what floor do the instructions take Santa?
 
+# --- Part Two ---
+
+#   Now, given the same instructions, find the position of the first character that causes him to enter the basement (floor -1). The first character in the instructions has position 1, the second character has position 2, and so on.
+
+#   For example:
+
+#   ) causes him to enter the basement at character position 1.
+#  ()()) causes him to enter the basement at character position 5.
+#  What is the position of the character that causes Santa to first enter the basement?
+
 module Advent
   class Day1
 
     def initialize
-      @file = File.open("input.txt", "r")
+      file = File.open("input.txt", "r")
+      @input = file.readline
     end
 
     def problem1
-      input = @file.readline
-      input.count("(") - input.count(")")
+      @input.count("(") - @input.count(")")
+    end
+
+    def problem2
+      characters = @input.split("")
+      floor = 0
+      characters.each.with_index(1) do |character, index|
+        floor += character == "(" ? 1 : -1
+        return index if floor == -1
+      end
     end
   end
 end
