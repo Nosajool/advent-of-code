@@ -15,6 +15,21 @@
 # haegwjzuvuyypxyu is naughty because it contains the string xy.
 # dvszwmarrgswjxmb is naughty because it contains only one vowel.
 # How many strings are nice?
+# --- Part Two ---
+
+# Realizing the error of his ways, Santa has switched to a better model of determining whether a string is naughty or nice. None of the old rules apply, as they are all clearly ridiculous.
+
+# Now, a nice string is one with all of the following properties:
+
+# It contains a pair of any two letters that appears at least twice in the string without overlapping, like xyxy (xy) or aabcdefgaa (aa), but not like aaa (aa, but it overlaps).
+# It contains at least one letter which repeats with exactly one letter between them, like xyx, abcdefeghi (efe), or even aaa.
+# For example:
+
+# qjhvhtzxzqqjkmpb is nice because is has a pair that appears twice (qj) and a letter that repeats with exactly one letter between them (zxz).
+# xxyxx is nice because it has a pair that appears twice and a letter that repeats with one between, even though the letters used by each rule overlap.
+# uurcxstgmygtbstg is naughty because it has a pair (tg) but no repeat with a single letter between them.
+# ieodomkazucvgmuy is naughty because it has a repeating letter with one between (odo), but no pair that appears twice.
+# How many strings are nice under these new rules?
 
 module Advent
   class Day5
@@ -29,6 +44,18 @@ module Advent
         next if word.scan(/[aeiou]/).count < 3
         next if /(.)\1/ !~ word
         next if /ab|cd|pq|xy/ =~ word
+
+        nice_word_count += 1
+      end
+
+      nice_word_count
+    end
+
+    def problem2
+      nice_word_count = 0
+      @words.each do |word|
+        next if /(..).*\1/ !~ word
+        next if /(.).\1/ !~ word
 
         nice_word_count += 1
       end
