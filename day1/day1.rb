@@ -51,5 +51,6 @@ module Advent
         return index if floor == -1
       end
     end
+
   end
 end

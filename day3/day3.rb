@@ -75,5 +75,6 @@ module Advent
         return [current_location.first - 1, current_location.last]
       end
     end
+
   end
 end

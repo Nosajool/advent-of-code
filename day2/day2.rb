@@ -56,5 +56,6 @@ module Advent
     def ribbon_for_box(box)
       dimensions(box).inject(:*)
     end
+
   end
 end

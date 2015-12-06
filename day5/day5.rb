@@ -62,5 +62,6 @@ module Advent
 
       nice_word_count
     end
+
   end
 end

@@ -45,5 +45,6 @@ module Advent
     def generate_md5(number)
       Digest::MD5.hexdigest(@input + number.to_s)
     end
+
   end
 end
