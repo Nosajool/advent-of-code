@@ -12,55 +12,92 @@
 
 # turn on 0,0 through 999,999 would turn on (or leave on) every light.
 # toggle 0,0 through 999,0 would toggle the first line of 1000 lights, turning off the ones that were on, and turning on the ones that were off.
+
 # turn off 499,499 through 500,500 would turn off (or leave off) the middle four lights.
 # After following the instructions, how many lights are lit?
+
+# --- Part Two ---
+
+# You just finish implementing your winning light pattern when you realize you mistranslated Santa's message from Ancient Nordic Elvish.
+
+# The light grid you bought actually has individual brightness controls; each light can have a brightness of zero or more. The lights all start at zero.
+
+# The phrase turn on actually means that you should increase the brightness of those lights by 1.
+
+# The phrase turn off actually means that you should decrease the brightness of those lights by 1, to a minimum of zero.
+
+# The phrase toggle actually means that you should increase the brightness of those lights by 2.
+
+# What is the total brightness of all lights combined after following Santa's instructions?
+
+# For example:
+
+# turn on 0,0 through 0,0 would increase the total brightness by 1.
+# toggle 0,0 through 999,999 would increase the total brightness by 2000000.
+
+
 
 module Advent
   class Day6
 
     def initialize
       @instructions = File.readlines(File.dirname(__FILE__) + "/input.txt")
-
     end
 
     def problem1
-      light_bulbs = Array.new(1000) { Array.new(1000) { Lightbulb.new } }
-      @instructions.each do |instruction|
+      generate_grid(@instructions).inject(0) { |sum, x| sum + x.count(&:on?) }
+    end
+
+    def problem2
+      generate_grid(@instructions).inject(0) do |total_brightness, x|
+        total_brightness += x.inject(0) do |row_brightness, y|
+          row_brightness + y.brightness
+        end
+      end
+    end
+
+    def generate_grid(instructions)
+      grid = Array.new(1000) { Array.new(1000) { Lightbulb.new } }
+      instructions.each do |instruction|
         coordinates = instruction.split(" ").map { |word| word if word =~ /,/ }
         coordinates.compact!
         xcoords = coordinates.map { |coord| coord.split(",").first.to_i }
         ycoords = coordinates.map { |coord| coord.split(",").last.to_i }
         (xcoords.first..xcoords.last).each do |x|
           (ycoords.first..ycoords.last).each do |y|
-            light_bulbs[x][y].turn_on if instruction.include? 'on'
-            light_bulbs[x][y].turn_off if instruction.include? 'off'
-            light_bulbs[x][y].toggle if instruction.include? 'toggle'
+            grid[x][y].turn_on if instruction.include? 'on'
+            grid[x][y].turn_off if instruction.include? 'off'
+            grid[x][y].toggle if instruction.include? 'toggle'
           end
         end
-
       end
       
-      light_bulbs.inject(0) { |sum, x| sum += x.count(&:on?) }
+      grid
     end
 
   end
 
   class Lightbulb
+    attr_reader :brightness
 
     def initialize
       @state = 0
+      @brightness = 0
     end
 
     def toggle
       @state = 1 - @state
+      @brightness += 2
     end
 
     def turn_on
       @state = 1
+      @brightness += 1
     end
 
     def turn_off
       @state = 0
+      @brightness -= 1 if @brightness > 0
     end
 
     def on?
