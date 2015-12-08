@@ -71,7 +71,7 @@ module Advent
           end
         end
       end
-      
+
       grid
     end
 
