@@ -35,6 +35,10 @@
 # x: 123
 # y: 456
 # In little Bobby's kit's instructions booklet (provided as your puzzle input), what signal is ultimately provided to wire a?
+# --- Part Two ---
+
+# Now, take the signal you got on wire a, override wire b to that signal, and reset the other wires (including wire a). What new signal is ultimately provided to wire a?
+
 class String
   def numeric?
     return true if self =~ /\A\d+\Z/
@@ -56,6 +60,17 @@ module Advent
       
       circuit.wire_signal('a')
     end
+
+    def problem2
+      circuit = Circuit.new
+      @instructions.each do |instruction|
+        circuit.add_instruction(instruction)
+      end
+      circuit.add_instruction("#{circuit.wire_signal('a')} -> b")
+      circuit.purge_cache
+
+      circuit.wire_signal('a')
+    end
   end
 
   class Circuit
@@ -71,6 +86,10 @@ module Advent
 
     def wire_signal(wire_identifier)
       evaluate_expression(@expressions[wire_identifier])
+    end
+
+    def purge_cache
+      @cached = {}
     end
 
     private
