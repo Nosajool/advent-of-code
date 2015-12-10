@@ -30,8 +30,6 @@
 # "\x27" encodes to "\"\\x27\"", an increase from 6 characters to 11.
 # Your task is to find the total number of characters to represent the newly encoded strings minus the number of characters of code in each original string literal. For example, for the strings above, the total encoded length (6 + 9 + 16 + 11 = 42) minus the characters in the original code representation (23, just like in the first part of this puzzle) is 42 - 23 = 19.
 
-
-
 module Advent
   class Day8
 
@@ -46,7 +44,7 @@ module Advent
     def problem2
       encoded_length - code_length
     end
-    
+
     private
 
     def code_length
