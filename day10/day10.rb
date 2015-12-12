@@ -15,6 +15,14 @@
 
 # Your puzzle input is 1113122113.
 
+# --- Part Two ---
+
+# Neat, right? You might also enjoy hearing John Conway talking about this sequence (that's Conway of Conway's Game of Life fame).
+
+# Now, starting again with the digits in your puzzle input, apply this process 50 times. What is the length of the new result?
+
+# Your puzzle input is still 1113122113.
+
 module Advent
   class Day10
 
@@ -32,6 +40,12 @@ module Advent
     end
 
     def problem2
+      iteration = @input
+      50.times do
+        iteration = perform_look_and_say(iteration)
+      end
+
+      iteration.length
     end
 
     private
