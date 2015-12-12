@@ -13,23 +13,47 @@
 # You will not encounter any strings containing numbers.
 
 # What is the sum of all numbers in the document?
+# --- Part Two ---
+
+# Uh oh - the Accounting-Elves have realized that they double-counted everything red.
+
+# Ignore any object (and all of its children) which has any property with the value "red". Do this only for objects ({...}), not arrays ([...]).
+
+# [1,2,3] still has a sum of 6.
+# [1,{"c":"red","b":2},3] now has a sum of 4, because the middle object is ignored.
+# {"d":"red","e":[1,2,3,4],"f":5} now has a sum of 0, because the entire structure is ignored.
+# [1,"red",5] has a sum of 6, because "red" in an array has no effect.
+
+require 'json'
 
 module Advent
   class Day12
 
     def initialize
-      @lines = File.readlines(File.dirname(__FILE__) + "/input.txt").map(&:chomp)
+      @input = File.open(File.dirname(__FILE__) + "/input.txt").readline.chomp
     end
 
     def problem1
-      @lines.map do |line|
-        line.scan(/(-?\d+)/).map { |num| num.first.to_i }.reduce(:+)
-      end.reduce(:+)
+      @input.scan(/(-?\d+)/).map { |num| num.first.to_i }.reduce(:+)
     end
 
     def problem2
-      
+      sum_avoiding_red(JSON.parse(@input))
     end
 
+    private
+
+    def sum_avoiding_red(input)
+      if input.kind_of?(Array)
+        return input.map { |element| sum_avoiding_red(element) }.reduce(:+)
+      elsif input.kind_of?(Hash)
+        return 0 if input.values.include?("red")
+        return input.map { |value| sum_avoiding_red(value) }.reduce(:+)
+      elsif input.kind_of?(Numeric)
+        return input
+      else
+        return 0
+      end
+    end
   end
 end
