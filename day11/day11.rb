@@ -21,6 +21,11 @@
 # Given Santa's current password (your puzzle input), what should his next password be?
 
 # Your puzzle input is vzbxkghb.
+# --- Part Two ---
+
+# Santa's password expired again. What's the next one?
+
+# Your puzzle input is still vzbxkghb.
 
 module Advent
   class Day11
@@ -30,19 +35,23 @@ module Advent
     end
 
     def problem1
-      password = @input
+      next_valid_password(@input)
+    end
+
+    def problem2
+      first_password = next_valid_password(@input)
+      next_valid_password(first_password.succ)
+    end
+
+    private
+
+    def next_valid_password(password)
       until valid_password?(password) do
         password.succ! # Returns the successor to str.
       end
       
       password
     end
-
-    def problem2
-      
-    end
-
-    private
 
     def valid_password?(password)
       @regex_3_letters ||= /#{("a".."z").each_cons(3).map(&:join).join("|")}/
