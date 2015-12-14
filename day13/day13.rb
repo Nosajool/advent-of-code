@@ -31,6 +31,14 @@
 
 # What is the total change in happiness for the optimal seating arrangement of the actual guest list?
 
+# --- Part Two ---
+
+# In all the commotion, you realize that you forgot to seat yourself. At this point, you're pretty apathetic toward the whole thing, and your happiness wouldn't really go up or down regardless of who you sit next to. You assume everyone else would be just as ambivalent about sitting next to you, too.
+
+# So, add yourself to the list, and give all happiness relationships that involve you a score of 0.
+
+# What is the total change in happiness for the optimal seating arrangement that actually includes yourself?
+
 module Advent
   class Day13
     def initialize
@@ -38,12 +46,23 @@ module Advent
     end
 
     def problem1
-      preferences.max
+      seating_arrangement_scores(generate_preferences).max
+    end
+
+    def problem2
+      original_preferences = generate_preferences
+      original_preferences.keys.each do |person|
+        original_preferences[person]["me"] = 0
+        original_preferences["me"] ||= {}
+        original_preferences["me"][person] = 0
+      end
+
+      seating_arrangement_scores(original_preferences).max
     end
 
     private
 
-    def preferences
+    def generate_preferences
       preferences = {}
       @rules.each do |rule|
         person, sign, amount, target = rule.match(/(\w+).+ (\w+) (\d+).+ (\w+)/).captures
@@ -53,6 +72,10 @@ module Advent
         preferences[person][target] = amount
       end
 
+      preferences
+    end
+
+    def seating_arrangement_scores(preferences)
       preferences.keys.permutation.map do |seating_arrangement|
         seating_arrangement << seating_arrangement.first
         seating_arrangement.each_cons(2).map do |person, neighbour|
