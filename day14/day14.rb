@@ -14,6 +14,18 @@
 
 # Given the descriptions of each reindeer (in your puzzle input), after exactly 2503 seconds, what distance has the winning reindeer traveled?
 
+# --- Part Two ---
+
+# Seeing how reindeer move in bursts, Santa decides he's not pleased with the old scoring system.
+
+# Instead, at the end of each second, he awards one point to the reindeer currently in the lead. (If there are multiple reindeer tied for the lead, they each get one point.) He keeps the traditional 2503 second time limit, of course, as doing otherwise would be entirely ridiculous.
+
+# Given the example reindeer from above, after the first second, Dancer is in the lead and gets one point. He stays in the lead until several seconds into Comet's second burst: after the 140th second, Comet pulls into the lead and gets his first point. Of course, since Dancer had been in the lead for the 139 seconds before that, he has accumulated 139 points by the 140th second.
+
+# After the 1000th second, Dancer has accumulated 689 points, while poor Comet, our old champion, only has 312. So, with the new scoring system, Dancer would win (if the race ended at 1000 seconds).
+
+# Again given the descriptions of each reindeer (in your puzzle input), after exactly 2503 seconds, how many points does the winning reindeer have?
+
 module Advent
   class Day14
     def initialize
@@ -37,6 +49,56 @@ module Advent
 
         distance
       end.max
+    end
+
+    def problem2
+      stats = reindeer_stats
+      reindeers = stats.keys
+      2503.times do
+        reindeers.each do |reindeer|
+          if stats[reindeer][:resting] > 0
+            stats[reindeer][:resting] -= 1
+            if stats[reindeer][:resting] == 0
+              stats[reindeer][:moving] = stats[reindeer][:duration]
+            end
+          else # Moving
+            stats[reindeer][:moving] -= 1
+            stats[reindeer][:distance] += stats[reindeer][:speed]
+            if stats[reindeer][:moving] == 0
+              stats[reindeer][:resting] = stats[reindeer][:rest]
+            end
+          end
+        end
+
+        max_distance = stats.max_by { |reindeer, statistics| statistics[:distance] }.last[:distance]
+        reindeers.each do |reindeer|
+          if stats[reindeer][:distance] == max_distance
+            stats[reindeer][:points] += 1
+          end
+        end
+      end
+      
+      stats.max_by { |reindeer, statistics| statistics[:points] }.last[:points]
+    end
+
+    private
+
+    def reindeer_stats
+      stats = {}
+      @rules.each do |rule|
+        reindeer, speed, duration, rest = rule.match(/(\w+) .+ (\d+).+ (\d+).+ (\d+)/).captures
+        stats[reindeer] = {
+          speed: speed.to_i,
+          duration: duration.to_i,
+          rest: rest.to_i,
+          points: 0,
+          resting: 0,
+          distance: 0,
+          moving: duration.to_i
+        }
+      end
+      
+      stats
     end
 
   end
